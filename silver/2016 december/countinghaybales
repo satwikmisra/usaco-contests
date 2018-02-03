@@ -1,0 +1,38 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n,q;
+vector<int>cows;
+
+int search(int val){
+    if(val<cows[1]) return 0;
+    if(val>cows[cows.size()-1]) return cows.size()-1;
+    int lo=0; int hi=cows.size();
+    while(lo!=hi){
+        int mid=(lo+hi+1)/2;
+        if(cows[mid]==val) return mid;
+        if(cows[mid]>val) hi=mid-1;
+        else{
+            lo=mid;
+        }
+    }
+    return lo;
+}
+
+int main()
+{
+    ifstream cin("haybales.in"); ofstream cout("haybales.out");
+    cin>>n>>q;
+    cows.push_back(0);
+    for(int i=0;i<n;i++){
+        int t; cin>>t; cows.push_back(t);
+    }
+    sort(cows.begin(),cows.end());
+    for(int i=0;i<q;i++){
+        int a,b; cin>>a>>b;
+        cout<<search(b)-search(a-1)<<"\n";
+    }
+
+    return 0;
+}
