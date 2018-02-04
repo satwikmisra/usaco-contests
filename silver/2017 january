@@ -1,0 +1,32 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    ifstream cin("hps.in"); ofstream cout("hps.out");
+    int n; cin>>n;
+    int pref[3][n+1];
+    for(int i=0;i<3;i++){
+        pref[i][0]=0;
+    }
+    for(int i=1;i<=n;i++){
+        for(int j=0;j<3;j++){
+            pref[j][i]=pref[j][i-1];
+        }
+        char c; cin>>c;
+        if(c=='H') pref[0][i]++;
+        if(c=='P') pref[1][i]++;
+        if(c=='S') pref[2][i]++;
+    }
+    int ans=0;
+    for(int i=0;i<=n;i++){
+        for(int j=0;j<3;j++){
+            for(int k=0;k<3;k++){
+                ans=max(pref[j][i] + (pref[k][n]-pref[k][i]), ans);
+            }
+        }
+    }
+    cout<<ans;
+    return 0;
+}
