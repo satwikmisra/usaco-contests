@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n,t;
+vector<int>v;
+
+bool sim(int k){
+    priority_queue<int, vector<int>, greater<int> >q;
+    int next=1;
+    q.push(v[0]);
+    int lt=0;
+    while(!q.empty() && next<n){
+        if(q.size()==k){
+            lt=q.top();
+            q.pop();
+        }
+        //cout<<lt<<" ";
+        if(lt>t){
+            //cout<<lt;
+            return false;
+        }
+        q.push(v[next]+lt);
+        next++;
+
+    }
+    while(!q.empty()){
+        lt=q.top();
+        q.pop();
+        if(lt>t){
+            //cout<<lt;
+            return false;
+        }
+
+    }
+    return true;
+}
+
+int main()
+{
+    ifstream cin("cowdance.in"); ofstream cout("cowdance.out");
+    cin>>n>>t;
+    for(int i=0;i<n;i++){
+        int c; cin>>c;
+        v.push_back(c);
+    }
+    //bool k=sim(4);
+    int lo=1; int hi=n;
+    while(lo<hi){
+        int mid=(lo+hi)/2;
+        if(sim(mid)){
+            hi=mid;
+        }
+        else lo=mid+1;
+    }
+    cout<<lo;
+    return 0;
+}
