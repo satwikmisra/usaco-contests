@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int c,n;
+vector<int>chicks;
+vector<pair<int,int> >cows;
+
+int main()
+{
+    ifstream cin("helpcross.in"); ofstream cout("helpcross.out");
+    cin>>c>>n;
+    for(int i=0;i<c;i++){
+        int t; cin>>t;
+        chicks.push_back(t);
+    }
+    sort(chicks.begin(), chicks.end());
+    for(int i=0;i<n;i++){
+        int s,e; cin>>s>>e;
+        cows.push_back(make_pair(e,s));
+    }
+    sort(cows.begin(),cows.end());
+    int ans=0;
+    for(int i=0;i<n;i++){
+        auto it=lower_bound(chicks.begin(),chicks.end(),cows[i].second);
+        if(*it <= cows[i].first && it!=chicks.end()){
+            ans++;
+            chicks.erase(it);
+        }
+    }
+    cout<<ans;
+    return 0;
+}
