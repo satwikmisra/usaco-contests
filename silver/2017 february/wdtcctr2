@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n,k,b;
+
+int main()
+{
+    ifstream cin("maxcross.in"); ofstream cout("maxcross.out");
+    cin>>n>>k>>b;
+    bool a[n+1];
+    int pref[n+1];
+    fill_n(a,n+1,false);
+    for(int i=0;i<b;i++){
+        int t; cin>>t;
+        a[t]=true;
+    }
+    pref[0]=0;
+    for(int i=1;i<=n;i++){
+        pref[i]=pref[i-1];
+        if(a[i]) pref[i]++;
+    }
+    int ans=INT_MAX;
+    for(int i=1;i+k-1<=n;i++){
+        int broke=pref[i+k-1]-pref[i-1];
+        //cout<<broke<<" ";
+        ans=min(ans, broke);
+    }
+    cout<<ans;
+    return 0;
+}
