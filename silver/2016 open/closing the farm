@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n,m;
+vector<int> paths[3001];
+bool visit[3001];
+bool closed[3001];
+int c;
+
+void reach(int cur){
+    if(visit[cur]) return;
+    visit[cur]=true;
+    c++;
+    for(int i=0;i<paths[cur].size();i++){
+        int nb=paths[cur][i];
+        if(!closed[nb] && !visit[nb]){
+            reach(nb);
+        }
+    }
+}
+
+int fstart(){
+    for(int i=1;i<=n;i++){
+        if(!closed[i]) return i;
+    }
+}
+
+int main()
+{
+    ifstream cin("closing.in");
+    ofstream cout("closing.out");
+    cin>>n>>m;
+    for(int i=0;i<m;i++){
+        int t1,t2; cin>>t1>>t2;
+        paths[t1].push_back(t2);
+        paths[t2].push_back(t1);
+    }
+    reach(fstart());
+    if(c==n) cout<<"YES"<<"\n";
+    else cout<<"NO"<<"\n";
+    //cout<<c;
+    for(int i=1;i<=n-1;i++){
+        int nclose; cin>>nclose;
+        closed[nclose]=true;
+        fill_n(visit,3001,false);
+        c=0;
+        reach(fstart());
+        //cout<<fstart()<<"\n";
+        if(c==n-i) cout<<"YES"<<"\n";
+        else cout<<"NO"<<"\n";
+    }
+
+    return 0;
+}
