@@ -4,8 +4,9 @@ using namespace std;
 
 int n,k;
 vector<int>di;
+vector<pair<int,int> >pref;
 
-int cut(int t){
+pair<int,int> cut(int t){
     vector<int>lo;
     vector<int>hi;
     int nlo=t; int lhi=t+1;
@@ -19,7 +20,7 @@ int cut(int t){
         lhi++;
         hi.push_back(di[lhi]);
     }
-    return lo.size()+hi.size();
+    return make_pair(lo.size(), hi.size());
 }
 
 int main()
@@ -33,9 +34,17 @@ int main()
     }
     sort(di.begin(), di.end());
     int ans=INT_MIN;
-    for(int i=0;i<n-1;i++){
-        ans=max(ans,cut(i));
+    for(int i=0;i<n;i++){
+        pref.push_back(cut(i));
+    }
+    for(int i=0;i<n;i++){
+        for(int j=i;j<n;j++){
+            ans=max(ans, pref[i].first + pref[j].second);
+        }
     }
     cout<<ans;
+
+
     return 0;
 }
+
