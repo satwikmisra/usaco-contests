@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+vector<pair<int,int> >x;
+vector<pair<int,int> >y;
+vector<pair<int,int> >test;
+
+int area(int q, int j, int k){
+    int minx=INT_MAX; int miny=INT_MAX;
+    int maxx=INT_MIN; int maxy=INT_MIN;
+    for(int i=0;i<x.size();i++){
+        int nx=x[i].first;
+        int ny=x[i].second;
+        if(nx==test[q].first && ny==test[q].second) continue;
+        if(nx==test[j].first && ny==test[j].second) continue;
+        if(nx==test[k].first && ny==test[k].second) continue;
+        minx=min(minx,nx);
+        maxx=max(maxx,nx);
+        miny=min(miny,ny);
+        maxy=max(maxy,ny);
+    }
+    return (maxy-miny)*(maxx-minx);
+}
+
+int main()
+{
+    ifstream cin("reduce.in");
+    ofstream cout("reduce.out");
+    cin>>n;
+    for(int i=0;i<n;i++){
+        int t1,t2; cin>>t1>>t2;
+        x.push_back(make_pair(t1,t2));
+        y.push_back(make_pair(t2,t1));
+    }
+    sort(x.begin(),x.end());
+    sort(y.begin(),y.end());
+    for(int i=0;i<3;i++){
+        test.push_back(x[i]);
+        test.push_back(make_pair(y[i].second, y[i].first));
+    }
+    for(int i=n-1;i>n-4 && i>=0;i--){
+        test.push_back(x[i]);
+        test.push_back(make_pair(y[i].second, y[i].first));
+    }
+    for(int i=0;i<test.size();i++){
+        //cout<<test[i].first<<" "<<test[i].second<<"\n";
+    }
+    int ans=INT_MAX;
+    for(int i=0;i<test.size();i++){
+        for(int j=0;j<test.size();j++){
+            for(int k=0;k<test.size();k++){
+                ans=min(area(i,j,k),ans);
+            }
+        }
+    }
+    cout<<ans;
+    return 0;
+}
