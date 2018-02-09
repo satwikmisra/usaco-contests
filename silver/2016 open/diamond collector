@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n,k;
+vector<int>di;
+
+int cut(int t){
+    vector<int>lo;
+    vector<int>hi;
+    int nlo=t; int lhi=t+1;
+    lo.push_back(di[nlo]);
+    hi.push_back(di[lhi]);
+    while(nlo>0 && di[t]-di[nlo-1]<=k){
+        nlo--;
+        lo.push_back(di[nlo]);
+    }
+    while(lhi<n-1 && di[lhi+1]-di[t+1]<=k){
+        lhi++;
+        hi.push_back(di[lhi]);
+    }
+    return lo.size()+hi.size();
+}
+
+int main()
+{
+    ifstream cin("diamond.in");
+    ofstream cout("diamond.out");
+    cin>>n>>k;
+    for(int i=0;i<n;i++){
+        int t; cin>>t;
+        di.push_back(t);
+    }
+    sort(di.begin(), di.end());
+    int ans=INT_MIN;
+    for(int i=0;i<n-1;i++){
+        ans=max(ans,cut(i));
+    }
+    cout<<ans;
+    return 0;
+}
