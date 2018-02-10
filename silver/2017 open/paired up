@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    ifstream cin("pairup.in"); ofstream cout("pairup.out");
+    int m; cin>>m;
+    vector<pair<int,int> >cows;
+    for(int i=0;i<m;i++){
+        int x,y; cin>>x>>y;
+        cows.push_back(make_pair(y,x));
+    }
+    sort(cows.begin(), cows.end());
+    int lo=0; int hi=cows.size()-1;
+    int ans=INT_MIN;
+    while(hi>=lo){
+        int dn=min(cows[lo].second, cows[hi].second);
+        if(cows[lo].first==cows[hi].first) dn/=2;
+        cows[lo].second-=dn;
+        cows[hi].second-=dn;
+        ans=max(ans, cows[lo].first+cows[hi].first);
+        if(cows[lo].second==0){
+            lo++;
+        }
+        if(cows[hi].second==0){
+            hi--;
+        }
+    }
+    cout<<ans;
+}
