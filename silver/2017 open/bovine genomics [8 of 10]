@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n,m;
+vector<string>spot;
+vector<string>plain;
+int ans=0;
+
+bool check(int x, int y, int z){
+    set<string>s;
+    for(int i=0;i<n;i++){
+        string t="";
+        t+=spot[i][x]; t+=spot[i][y]; t+=spot[i][z];
+        s.insert(t);
+    }
+
+    //for(auto it=s.begin();it!=s.end();it++){
+        //cout<<*it<<" ";
+    //}
+    for(int i=0;i<n;i++){
+        string t="";
+        t+=plain[i][x]; t+=plain[i][y]; t+=plain[i][z];
+        if(s.count(t)>0) return false;
+    }
+    return true;
+
+}
+
+int main()
+{
+    ifstream cin("cownomics.in"); ofstream cout("cownomics.out");
+    cin>>n>>m;
+    for(int i=0;i<n;i++){
+        string t; cin>>t; spot.push_back(t);
+    }
+    for(int i=0;i<n;i++){
+        string t; cin>>t; plain.push_back(t);
+    }
+    for(int i=0;i<m;i++){
+        for(int j=i+1;j<m;j++){
+            for(int k=j+1;k<m;k++){
+                if(check(i,j,k)) ans++;
+            }
+        }
+    }
+    cout<<ans;
+
+    return 0;
+}
