@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n,m;
+vector<string>spot;
+vector<string>plain;
+int ans=0;
+int code[256];
+
+bool check(int x, int y, int z){
+    bitset<524>done;
+    for(int i=0;i<n;i++){
+        int temp= 107 * code[spot[i][x]] + 17 * code[spot[i][y]] + 7 * code[spot[i][z]];
+        done[temp]=1;
+    }
+    for(int i=0;i<n;i++){
+        int temp= 107 * code[plain[i][x]] + 17 * code[plain[i][y]] + 7 * code[plain[i][z]];
+        if(done[temp]){
+            return false;
+        }
+    }
+    return true;
+}
+
+int main()
+{
+    ifstream cin("cownomics.in"); ofstream cout("cownomics.out");
+    cin>>n>>m;
+    code['A']=4;
+    code['T']=3;
+    code['C']=2;
+    code['G']=1;
+    for(int i=0;i<n;i++){
+        string t; cin>>t; spot.push_back(t);
+    }
+    for(int i=0;i<n;i++){
+        string t; cin>>t; plain.push_back(t);
+    }
+    for(int i=0;i<m;i++){
+        for(int j=i+1;j<m;j++){
+            for(int k=j+1;k<m;k++){
+                if(check(i,j,k)) ans++;
+            }
+        }
+    }
+    cout<<ans;
+
+    return 0;
+}
