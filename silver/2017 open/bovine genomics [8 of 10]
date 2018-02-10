@@ -14,10 +14,6 @@ bool check(int x, int y, int z){
         t+=spot[i][x]; t+=spot[i][y]; t+=spot[i][z];
         s.insert(t);
     }
-
-    //for(auto it=s.begin();it!=s.end();it++){
-        //cout<<*it<<" ";
-    //}
     for(int i=0;i<n;i++){
         string t="";
         t+=plain[i][x]; t+=plain[i][y]; t+=plain[i][z];
