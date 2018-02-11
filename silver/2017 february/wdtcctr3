@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+set<pair<int,int> > roads[101][101];
+bool cows[101][101];
+bool visit[101][101];
+int dc[4]={-1,0,1,0};
+int dr[4]={0,1,0,-1};
+int n,k,r;
+int co=0;
+
+void flood(int r,int c){
+    if(visit[r][c]) return;
+    visit[r][c]=true;
+    if(cows[r][c]) co++;
+
+    for(int i=0;i<4;i++){
+        int nr=r+dr[i];
+        int nc=c+dc[i];
+        pair<int,int> p=make_pair(nr,nc);
+        if(roads[r][c].count(p) > 0){
+            continue;
+        }
+        else{
+            flood(nr,nc);
+        }
+    }
+}
+
+int main()
+{
+    ifstream cin("countcross.in"); ofstream cout("countcross.out");
+    cin>>n>>k>>r;
+    for(int i=0;i<r;i++){
+        int r1,c1,r2,c2;
+        cin>>r1>>c1>>r2>>c2;
+        roads[r1][c1].insert(make_pair(r2,c2));
+        roads[r2][c2].insert(make_pair(r1,c1));
+    }
+    for(int i=1;i<=n;i++){
+        roads[i][1].insert(make_pair(i,0));
+        roads[i][n].insert(make_pair(i,n+1));
+        roads[1][i].insert(make_pair(0,i));
+        roads[n][i].insert(make_pair(n+1,i));
+    }
+    for(int i=0;i<k;i++){
+        int r1,c1;
+        cin>>r1>>c1;
+        cows[r1][c1]=true;
+    }
+    int ans=0;
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            co=0;
+            if(cows[i][j]){
+                flood(i,j);
+                ans+=(k-co);
+            }
+            memset( &visit[0][0], 0, sizeof(visit) );
+
+        }
+    }
+    ans/=2;
+    cout<<ans;
+}
