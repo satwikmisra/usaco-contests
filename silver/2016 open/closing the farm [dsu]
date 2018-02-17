@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAXN = 200000;
+
+int father[MAXN];
+int height[MAXN];
+int numtrees=0;
+
+void uinit(int sz){
+    for(int i=0;i<sz;i++){
+        father[i]=i;
+        height[i]=i;
+    }
+    numtrees=sz;
+}
+
+int ufind(int node){
+    if(father[node]==node) return node;
+    return ufind(father[node]);
+}
+
+void umerge(int a, int b){
+    a=ufind(a); b=ufind(b);
+    if(a==b) return;
+    if(height[a]>height[b]){
+        father[b]=a;
+        height[b]=max(height[a],height[b]+1);
+    }
+    else{
+        father[a]=b;
+        height[b]=max(height[b],height[a]+1);
+    }
+    numtrees--;
+}
+
+int n,m;
+vector<int> adj[MAXN];
+vector<int>queries;
+
+
+int main()
+{
+    ifstream cin("closing.in"); ofstream cout("closing.out");
+    cin>>n>>m;
+    for(int i=0;i<m;i++){
+        int a, b; cin>>a>>b; a--; b--;
+        adj[a].push_back(b);
+        adj[b].push_back(a);
+    }
+    queries.resize(n);
+    for(int i=0;i<n;i++){
+        cin>>queries[i];
+        queries[i]--;
+    }
+    uinit(n);
+    bool ans[MAXN]; bool open[MAXN];
+    fill_n(ans,MAXN,false); fill_n(open,MAXN,false);
+    open[queries[n-1]]=true;
+    ans[n-1]=true;
+    for(int i=n-2;i>=0;i--){
+        int test=queries[i];
+        for(int j=0;j<adj[test].size();j++){
+            if(open[adj[test][j]]){
+                umerge(test, adj[test][j]);
+            }
+        }
+        ans[i]=(numtrees==i+1);
+        open[queries[i]]=true;
+    }
+    for(int i=0;i<n;i++){
+        if(ans[i]) cout<<"YES"<<"\n";
+        else cout<<"NO"<<"\n";
+    }
+
+
+    return 0;
+}
