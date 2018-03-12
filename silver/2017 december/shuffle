@@ -1,0 +1,37 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main()
+{
+    ifstream cin("shuffle.in"); ofstream cout("shuffle.out");
+    int n; cin>>n;
+    vector<int>v;
+    for(int i=0;i<n;i++){
+        int t; cin>>t; v.push_back(t-1);
+    }
+    int par[n];
+    fill_n(par,n,0);
+    for(int i=0;i<n;i++){
+        par[v[i]]++;
+    }
+    int ans=n;
+    queue<int>process;
+    for(int i=0;i<n;i++){
+        if(par[i]==0){
+            ans--;
+            process.push(i);
+        }
+    }
+    while(!process.empty()){
+        int cur=process.front();
+        process.pop();
+        par[v[cur]]--;
+        if(par[v[cur]]==0){
+            ans--;
+            process.push(v[cur]);
+        }
+    }
+    cout<<ans;
+    return 0;
+}
