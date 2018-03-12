@@ -1,0 +1,45 @@
+//same as usaco editorial
+
+#include <bits/stdc++.h>
+
+using namespace std;
+int n;
+
+int main()
+{
+    ifstream cin("lifeguards.in"); ofstream cout("lifeguards.out");
+    cin>>n;
+    vector<pair<int,int>>v;
+    for(int i=0;i<n;i++){
+        int a,b; cin>>a>>b;
+        v.push_back(make_pair(a,i));
+        v.push_back(make_pair(b,i));
+    }
+    sort(v.begin(),v.end());
+    int tot=0;
+    int a[n];
+    fill_n(a,n,0);
+    set<int>cur;
+    int prev=v[0].first;
+    for(int i=0;i<v.size();i++){
+        if(cur.size()==1){
+            a[*cur.begin()]+=v[i].first-prev;
+        }
+        if(!cur.empty()){
+            tot+=(v[i].first-prev);
+        }
+        if(cur.count(v[i].second)>0){
+            cur.erase(v[i].second);
+        }
+        else cur.insert(v[i].second);
+        prev=v[i].first;
+
+    }
+    int ans=0;
+    for(int i=0;i<n;i++){
+        //cout<<i<<" "<<a[i]<<"\n";
+        ans=max(ans, tot-a[i]);
+    }
+    cout<<ans;
+    return 0;
+}
