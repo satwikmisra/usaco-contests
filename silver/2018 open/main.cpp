@@ -1,0 +1,102 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+int grid[251][251];
+bool visit[251][251];
+int dr[4]={-1,1,0,0};
+int dc[4]={0,0,-1,1};
+set<int>test;
+int tmax=0;
+int t=0;
+
+bool inbounds(int r, int c){
+    return (r>=0 && c>=0 && r<n && c<n);
+}
+
+void flood(int r, int c, int type){
+    tmax++;
+    //cout<<r<<" "<<c<<"\n";
+    visit[r][c]=true;
+    for(int i=0;i<4;i++){
+        int nr=r+dr[i];
+        int nc=c+dc[i];
+        if(inbounds(nr,nc) && !visit[nr][nc] && grid[nr][nc]==grid[r][c]){
+            flood(nr,nc, type);
+        }
+    }
+}
+
+void flood2(int r, int c, int type1, int type2){
+    tmax++;
+    visit[r][c]=true;
+    for(int i=0;i<4;i++){
+        int nr=r+dr[i];
+        int nc=c+dc[i];
+        if(inbounds(nr,nc) && !visit[nr][nc] && (grid[nr][nc]==type1 || grid[nr][nc]==type2)){
+            flood2(nr,nc, type1, type2);
+        }
+    }
+}
+
+int main()
+{
+    ifstream cin("multimoo.in"); ofstream cout("multimoo.out");
+    cin>>n;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            cin>>grid[i][j];
+        }
+    }
+
+    int ans1=0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(visit[i][j]) continue;
+            flood(i,j,grid[i][j]);
+            ans1=max(ans1,tmax);
+            tmax=0;
+        }
+    }
+
+    cout<<ans1<<"\n";
+
+    int ans2=0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            tmax=0;
+            for(int k=0;k<4;k++){
+                bool should=true;
+                if(i==0 || j==0 || i==n-1 || j==n-1){
+                    if(!inbounds(i+dr[k],j+dc[k])) should=false;
+                }
+                /*if(stest[i+dr[k]][j+dc[k]].count(make_pair(i,j))>0){
+                    should=false;
+                }
+                else{
+                    stest[i][j].insert(make_pair(i+dr[k],j+dc[k]));
+                }
+                */
+                if(should){
+                    test.insert(grid[i+dr[k]][j+dc[k]]);
+                }
+            }
+            for(auto it=test.begin();it!=test.end();it++){
+                tmax=0;
+                memset(visit,false,sizeof(visit));
+                flood2(i,j,grid[i][j],*it);
+                ans2=max(ans2, tmax);
+            }
+            if(clock()> 1.8*CLOCKS_PER_SEC){
+                cout<<ans2;
+                return 0;
+            }
+
+            test.clear();
+        }
+    }
+    cout<<ans2;
+
+    return 0;
+}
