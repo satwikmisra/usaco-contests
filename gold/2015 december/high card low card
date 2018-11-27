@@ -1,0 +1,70 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+
+vector<int>eg1;
+vector<int>eg2;
+vector<int>bg1;
+vector<int>bg2;
+vector<int>temp;
+
+int main()
+{
+    ifstream cin("cardgame.in");
+    ofstream cout("cardgame.out");
+    cin>>n;
+    bool es[2*n+1];
+    memset(es,false,sizeof(es));
+    for(int i=1;i<=n;i++){
+        int t; cin>>t; es[t]=true;
+        if(i<=(n/2)){
+            eg1.push_back(t);
+        }
+        else{
+            eg2.push_back(t);
+        }
+    }
+    for(int i=1;i<=2*n;i++){
+        if(!es[i]){
+            if(bg2.size()<n/2){
+                bg2.push_back(i);
+            }
+            else{
+                bg1.push_back(i);
+            }
+        }
+    }
+    sort(eg1.begin(),eg1.end());
+    sort(eg2.begin(),eg2.end());
+    reverse(eg2.begin(),eg2.end());
+    reverse(bg2.begin(),bg2.end());
+    int ans=0;
+    int b=0, e=0;
+    while(e<eg1.size() && b<bg1.size()){
+        if(bg1[b]>eg1[e]){
+            ans++;
+            b++;
+            e++;
+        }
+        else{
+            b++;
+        }
+    }
+    e=0; b=0;
+    while(e<eg2.size() && b<bg2.size()){
+        if(bg2[b]<eg2[e]){
+            ans++;
+            b++;
+            e++;
+        }
+        else{
+            b++;
+        }
+    }
+    cout<<ans;
+
+
+    return 0;
+}
