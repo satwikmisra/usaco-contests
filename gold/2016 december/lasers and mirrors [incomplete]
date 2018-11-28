@@ -1,0 +1,64 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+struct line{
+    int co;
+    int dir;
+};
+
+bool operator <(const line& a, const line& b){
+    return a.co<b.co;
+}
+
+int n,xl,yl,xb,yb;
+map<line,vector<line>>xtoy;
+map<line,vector<line>>ytox;
+map<line,int>disth;
+map<line,int>distv;
+map<line,bool>visith;
+map<line,bool>visitv;
+
+int main()
+{
+    cin>>n>>xl>>yl>>xb>>yb;
+    disth[line{xb,0}]=distv[line{xb,0}]=disth[line{yb,1}]=distv[line{yb,1}]=INT_MAX;
+    for(int i=0;i<n;i++){
+        int t1, t2; cin>>t1>>t2;
+        xtoy[line{t1,0}].push_back(line{t2,1});
+        disth[line{t1,0}]=INT_MAX;
+        distv[line{t1,0}]=INT_MAX;
+        ytox[line{t2,1}].push_back(line{t1,0});
+        disth[line{t2,1}]=INT_MAX;
+        distv[line{t2,1}]=INT_MAX;
+    }
+    priority_queue<pair<int,line>>pq;
+    pq.push(make_pair(0,line{xl,0}));
+    disth[line{xl,0}]=0;
+    while(!pq.empty()){
+        line l=pq.top().second;
+        if(visith[l]) continue;
+        visith[l]=true;
+        if(l.dir==1){
+            for(int i=0;i<xtoy[l].size();i++){
+                line next=xtoy[l][i];
+                if(disth[l]+1<disth[next]){
+                    disth[next]=disth[l]+1;
+                    pq.push(make_pair(-disth[next],next));
+                }
+            }
+        }
+        else{
+            for(int i=0;i<ytox[l].size();i++){
+                line next=ytox[l][i];
+                if(disth[l]+1<disth[next]){
+                    disth[next]=disth[l]+1;
+                    pq.push(make_pair(-disth[next],next));
+                }
+            }
+        }
+
+    }
+    cout<<disth[line{xb,0}];
+    return 0;
+}
