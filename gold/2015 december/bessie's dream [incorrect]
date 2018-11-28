@@ -1,0 +1,76 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, m;
+int grid[1001][1001];
+int dist[1001][1001][2];
+int dr[4]={-1,1,0,0};
+int dc[4]={0,0,-1,1};
+
+struct state{
+    int row;
+    int col;
+    int smell;
+};
+
+bool operator <(const state& x, const state& y){
+        return tie(x.row,x.col,x.smell) < tie(y.row,y.col,y.smell);
+}
+
+priority_queue<pair<int,state> >pq;
+
+bool inbounds(int x, int y){
+    return (x>=0 && y>=0 && x<n && y<m);
+}
+
+bool valid(int x, int y, int s){
+    if(!inbounds(x,y)) return false;
+    if(grid[x][y]==0) return false;
+    if(grid[x][y]==3 && s==0) return false;
+    return true;
+}
+
+int main()
+{
+    ifstream cin("dream.in");
+    ofstream cout("dream.out");
+    cin>>n>>m;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<m;j++){
+            cin>>grid[i][j];
+            dist[i][j][0]=dist[i][j][1]=INT_MAX;
+        }
+    }
+    pq.push(make_pair(0,state{0,0,0}));
+    while(!pq.empty()){
+        int cdist=pq.top().first;
+        int cr=pq.top().second.row;
+        int cc=pq.top().second.col;
+        int csmell=pq.top().second.smell;
+        pq.pop();
+        if(cr==n-1 && cc==m-1){
+            cout<<cdist;
+            return 0;
+        }
+        if(dist[cr][cc][csmell]!=INT_MAX) continue;
+        dist[cr][cc][csmell]=cdist;
+        for(int k=0;k<4;k++){
+            int nr=cr+dr[k];
+            int nc=cc+dc[k];
+            int nsmell=csmell;
+            int ndist=cdist+1;
+            if(!valid(nr,nc,csmell)) continue;
+            if(grid[nr][nc]==4){
+                while(valid(nr+dr[k],nc+dc[k],csmell) && grid[nr][nc]==4){
+                    nr+=dr[k]; nc+=dc[k]; ndist++; nsmell=0;
+                }
+            }
+            if(grid[nr][nc]==2) nsmell=1;
+            if(dist[nr][nc][nsmell]<=ndist) continue;
+            pq.push(make_pair(ndist,state{nr,nc,nsmell}));
+        }
+    }
+    cout<<-1;
+    return 0;
+}
