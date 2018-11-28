@@ -36,7 +36,9 @@ int main()
     pq.push(make_pair(0,line{xl,0}));
     disth[line{xl,0}]=0;
     while(!pq.empty()){
+        cout<<1;
         line l=pq.top().second;
+        pq.pop();
         if(visith[l]) continue;
         visith[l]=true;
         if(l.dir==1){
@@ -59,6 +61,5 @@ int main()
         }
 
     }
-    cout<<disth[line{xb,0}];
     return 0;
 }
