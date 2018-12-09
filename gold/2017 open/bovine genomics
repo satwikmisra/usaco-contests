@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, m;
+vector<string>spotty;
+vector<string>plain;
+
+bool check2(int x, int y){
+    set<string>s;
+    for(int i=0;i<n;i++){
+        string t=spotty[i].substr(x,y);
+        s.insert(t);
+    }
+    for(int i=0;i<n;i++){
+        string t=plain[i].substr(x,y);
+        if(s.count(t)>0) return false;
+    }
+    return true;
+
+}
+
+bool check1(int k){
+    for(int i=0;i<m-k;i++){
+        if(check2(i,k)) return true;
+    }
+    return false;
+}
+
+int main()
+{
+    ifstream cin("cownomics.in");
+    ofstream cout("cownomics.out");
+    cin>>n>>m;
+    for(int i=0;i<2*n;i++){
+        string t; cin>>t;
+        if(i<n) spotty.push_back(t);
+        else plain.push_back(t);
+    }
+    int hi=m; int lo=1;
+    while(lo<hi){
+        int mid=(hi+lo)/2;
+        if(check1(mid)){
+            hi=mid;
+        }
+        else{
+            lo=mid+1;
+        }
+    }
+    cout<<lo;
+    return 0;
+}
