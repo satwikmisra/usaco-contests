@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n;
+vector<int>p;
+int hi[100001];
+int lo[100001];
+vector<int>del;
+
+int main()
+{
+    ifstream cin("art2.in");
+    ofstream cout("art2.out");
+    cin>>n;
+    for(int i=0;i<n;i++){
+        int t; cin>>t;
+        p.push_back(t);
+        lo[i]=INT_MAX;
+        hi[i]=INT_MIN;
+    }
+    for(int i=0;i<n;i++){
+        hi[p[i]]=max(hi[p[i]],i);
+        lo[p[i]]=min(lo[p[i]],i);
+    }
+    for(int i=0;i<n;i++){
+        if(i!=lo[p[i]] && i!=hi[p[i]]) del.push_back(i);
+    }
+    reverse(del.begin(),del.end());
+    for(int i=0;i<del.size();i++){
+        p.erase(p.begin()+del[i]);
+    }
+    string ord="";
+    for(int i=0;i<p.size();i++){
+        if(i==lo[p[i]]) ord+='s';
+        if(i==hi[p[i]]) ord+='e';
+    }
+    int fmax=0, cmax=0;
+    for(int i=0;i<ord.size();i++){
+        if(ord[i]=='s'){
+            cmax++;
+            if(cmax>fmax){
+                fmax=cmax;
+            }
+        }
+        else if(ord[i]=='e'){
+            if(cmax>0){
+                cmax--;
+            }
+            else{
+                cout<<-1;
+                return 0;
+            }
+        }
+    }
+    cout<<fmax;
+    return 0;
+}
