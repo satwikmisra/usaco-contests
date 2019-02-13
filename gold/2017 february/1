@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, t;
+bool visit[101][101][3];
+int dist[101][101][3];
+int grid[101][101];
+int dr[4]={1,0,-1,0};
+int dc[4]={0,1,0,-1};
+priority_queue<pair< pair<int,int>, pair<int,int> >>pq;
+
+bool inbounds(int nr, int nc){
+    return (nr>=0 && nc>=0 && nr<n && nc<n);
+}
+
+int main()
+{
+    for(int i=0;i<101;i++){
+        for(int j=0;j<101;j++){
+            for(int k=0;k<3;k++){
+                dist[i][j][k]=INT_MAX;
+            }
+        }
+    }
+    ifstream cin("visitfj.in");
+    ofstream cout("visitfj.out");
+    cin>>n>>t;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            int t; cin>>t; grid[i][j]=t;
+        }
+    }
+    pq.push({{0,0},{0,0}});
+    while(!pq.empty()){
+        auto a=pq.top();
+        pq.pop();
+        a.first.first*=(-1);
+        //cout<<a.second.first<<" "<<a.second.second<<"\n";
+        if(a.second.first==n-1 && a.second.second==n-1){
+            cout<<a.first.first;
+            return 0;
+        }
+        if(dist[a.second.first][a.second.second][a.first.second]!=INT_MAX) continue;
+        dist[a.second.first][a.second.second][a.first.second]=a.first.first;
+        a.first.second=(a.first.second+1)%3;
+        for(int k=0;k<4;k++){
+            int nr=a.second.first+dr[k];
+            int nc=a.second.second+dc[k];
+            if(inbounds(nr,nc) && dist[nr][nc][a.first.second]==INT_MAX){
+                if(a.first.second==0) pq.push({{-(a.first.first+t+grid[nr][nc]),a.first.second},{nr,nc}});
+                else pq.push({{-a.first.first-t,a.first.second},{nr,nc}});
+            }
+        }
+    }
+
+    return 0;
+}
