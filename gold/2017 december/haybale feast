@@ -1,0 +1,136 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+
+struct segtree{
+    vector<ll>tree;
+    vector<ll>sum;
+    vector<ll>lazy;
+    vector<ll>lo;
+    vector<ll>hi;
+    vector<ll>tree2;
+    segtree(ll sz){
+        tree.resize(4*sz+1);
+        lazy.resize(4*sz+1);
+        lo.resize(4*sz+1);
+        hi.resize(4*sz+1);
+        sum.resize(4*sz+1);
+        tree2.resize(4*sz+1);
+        init(1,0,sz-1);
+    }
+    void init(ll node, ll a, ll b){
+        lo[node]=a; hi[node]=b;
+        if(a==b) return;
+        int split=(a+b)/2;
+        init(2*node,a,split);
+        init(2*node+1,split+1,b);
+    }
+    void update(ll a, ll b, ll val){
+        hupdate(1,a,b,val);
+    }
+    ll minquery(ll a, ll b){
+        return hminquery(1,a,b);
+    }
+    ll maxquery(ll a, ll b){
+        return hmaxquery(1,a,b);
+    }
+    ll sumquery(ll a, ll b){
+        return hsumquery(1,a,b);
+    }
+    void prop(ll node){
+        lazy[2*node]+=lazy[node];
+        lazy[2*node+1]+=lazy[node];
+        lazy[node]=0;
+    }
+    void change(ll node){
+        tree[node]=min(tree[2*node+1] + lazy[2*node+1], tree[2*node] + lazy[2*node]);
+        tree2[node]=max(tree2[2*node+1] + lazy[2*node+1], tree2[2*node] + lazy[2*node]);
+        sum[node]=sum[2*node+1]+(hi[2*node+1]-lo[2*node+1]+1)*lazy[2*node+1] + sum[2*node]+(hi[2*node]-lo[2*node]+1)*lazy[2*node];
+    }
+    void minchange(ll node){
+        tree[node]=min(tree[2*node+1] + lazy[2*node+1], tree[2*node] + lazy[2*node]);
+    }
+    void maxchange(ll node){
+        tree2[node]=max(tree2[2*node+1] + lazy[2*node+1], tree2[2*node] + lazy[2*node]);
+    }
+    void sumchange(ll node){
+        sum[node]=sum[2*node+1]+(hi[2*node+1]-lo[2*node+1]+1)*lazy[2*node+1] + sum[2*node]+(hi[2*node]-lo[2*node]+1)*lazy[2*node];
+    }
+    void hupdate(ll node, ll a, ll b, ll val){
+        if(b<lo[node] || hi[node]<a) return;
+        if(a<=lo[node] && hi[node]<=b){
+            lazy[node]+=val;
+            return;
+        }
+        prop(node);
+        hupdate(2*node,a,b,val);
+        hupdate(2*node+1,a,b,val);
+        change(node);
+    }
+    ll hminquery(ll node, ll a, ll b){
+        if(b<lo[node] || hi[node]<a) return LONG_MAX;
+        if(a<=lo[node] && hi[node]<=b){
+            return tree[node]+lazy[node];
+        }
+        prop(node);
+        ll left=hminquery(2*node, a, b);
+        ll right=hminquery(2*node+1,a,b);
+        minchange(node);
+        return min(left, right);
+    }
+    ll hmaxquery(ll node, ll a, ll b){
+        if(b<lo[node] || hi[node]<a) return LONG_MIN;
+        if(a<=lo[node] && hi[node]<=b){
+            return tree2[node]+lazy[node];
+        }
+        prop(node);
+        ll left=hmaxquery(2*node, a, b);
+        ll right=hmaxquery(2*node+1,a,b);
+        maxchange(node);
+        return max(left, right);
+    }
+    ll hsumquery(ll node, ll a, ll b){
+        if(b<lo[node] || hi[node]<a) return 0;
+        if(a<=lo[node] && hi[node]<=b){
+            return sum[node]+(hi[node]-lo[node]+1)*lazy[node];
+        }
+        prop(node);
+        ll left=hsumquery(2*node, a, b);
+        ll right=hsumquery(2*node+1,a,b);
+        sumchange(node);
+        return left+right;
+    }
+
+};
+
+ll n, m;
+vector<pair<ll,ll>>v;
+
+int main()
+{
+    ifstream cin("hayfeast.in");
+    ofstream cout("hayfeast.out");
+    cin>>n>>m;
+    segtree s1=segtree(n);
+    segtree s2=segtree(n);
+    for(ll i=0;i<n;i++){
+        ll t1, t2; cin>>t1>>t2;
+        v.push_back(make_pair(t1,t2));
+        s1.update(i,i,t1);
+        s2.update(i,i,t2);
+    }
+    ll ans=INT_MAX;
+    ll j=0;
+    for(ll i=0;i<n;i++){
+        while(j<n && s1.sumquery(i,j)<m){
+            j++;
+        }
+        if(s1.sumquery(i,j)>=m){
+            ans=min(ans,(ll) s2.maxquery(i,j));
+        }
+    }
+    cout<<ans;
+    return 0;
+}
