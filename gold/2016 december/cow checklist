@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+vector<pair<int,int>>gu;
+vector<pair<int,int>>ho;
+int h, g;
+
+int dist(pair<int,int>i, pair<int,int>j){
+    return (i.first-j.first)*(i.first-j.first) + (i.second-j.second)*(i.second-j.second);
+}
+
+
+int main()
+{
+    ifstream cin("checklist.in");
+    ofstream cout("checklist.out");
+    cin>>h>>g;
+    gu.push_back(make_pair(0,0));
+    ho.push_back(make_pair(0,0));
+    int dp[h+1][g+1][2];
+    memset(dp,1000000,sizeof(dp));
+    for(int i=0;i<h;i++){
+        int t1, t2; cin>>t1>>t2;
+        ho.push_back(make_pair(t1,t2));
+    }
+    for(int i=0;i<g;i++){
+        int t1, t2; cin>>t1>>t2;
+        gu.push_back(make_pair(t1,t2));
+    }
+    dp[1][0][0]=0;
+    for(int i=2;i<=h;i++){
+        dp[i][0][0]=dp[i-1][0][0]+dist(ho[i],ho[i-1]);
+    }
+    dp[1][1][1]=dp[1][0][0]+dist(gu[1],ho[1]);
+    for(int j=2;j<=g;j++){
+        dp[1][j][1]=dp[1][j-1][1]+dist(gu[j],gu[j-1]);
+    }
+    for(int i=2;i<=h;i++){
+        for(int j=1;j<=g;j++){
+            dp[i][j][0]=dp[i-1][j][0]+dist(ho[i],ho[i-1]);
+            dp[i][j][0]=min(dp[i][j][0],dp[i-1][j][1]+dist(ho[i],gu[j]));
+            dp[i][j][1]=dp[i][j-1][1]+dist(gu[j],gu[j-1]);
+            dp[i][j][1]=min(dp[i][j][1],dp[i][j-1][0]+dist(gu[j],ho[i]));
+        }
+    }
+    cout<<dp[h][g][0];
+    return 0;
+}
