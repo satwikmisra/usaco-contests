@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+
+ll n, k;
+vector<vector<ll>>adj;
+vector<ll>col;
+ll dp[100001][3];
+ll mod=(ll)((ll)1e9)+7;
+
+void dfs(ll cur,ll par){
+    for(ll i=0;i<adj[cur].size();i++){
+        if(adj[cur][i]!=par)
+            dfs(adj[cur][i],cur);
+    }
+    //cout<<cur<<" ";
+    for(ll k=0;k<3;k++){
+        if(col[cur]!=k && col[cur]!=-1){
+            dp[cur][k]=0;
+            continue;
+        }
+        for(ll i=0;i<adj[cur].size();i++){
+            if(adj[cur][i]!=par){
+                ll nex=adj[cur][i];
+                dp[cur][k]*=(dp[nex][(k+1)%3] + dp[nex][(k+2)%3]);
+                dp[cur][k]%=mod;
+            }
+        }
+    }
+}
+
+int main()
+{
+    ifstream cin("barnpainting.in");
+    ofstream cout("barnpainting.out");
+    cin>>n>>k;
+    adj.resize(n+1);
+    col.assign(n+1,-1);
+    for(ll i=0;i<=100000;i++){
+        for(ll j=0;j<3;j++){
+            dp[i][j]=1;
+        }
+    }
+    for(ll i=0;i<n-1;i++){
+        ll t1,t2; cin>>t1>>t2;
+        adj[t1].push_back(t2);
+        adj[t2].push_back(t1);
+    }
+    for(ll i=0;i<k;i++){
+        ll t1, t2; cin>>t1>>t2;
+        col[t1]=t2-1;
+    }
+    dfs(1,0);
+    cout<<(dp[1][0]+dp[1][1]+dp[1][2])%mod;
+    return 0;
+}
