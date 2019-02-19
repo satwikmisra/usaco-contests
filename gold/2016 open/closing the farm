@@ -1,0 +1,87 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int n, m;
+vector<int> adj[200001];
+bool act[200001];
+vector<string>ans;
+vector<int>v;
+
+#define MAXSZ 200001
+
+int height[MAXSZ];
+int par[MAXSZ];
+int size[MAXSZ];
+
+void uinit(){
+    for(int i=0;i<MAXSZ;i++){
+        height[i]=1;
+        par[i]=i;
+        size[i]=1;
+    }
+}
+
+int ufind(int key){
+    if(par[key]!=key){
+        par[key]=ufind(par[key]);
+    }
+    return par[key];
+}
+
+bool connected(int a, int b){
+    return (ufind(a)==ufind(b));
+}
+
+void umerge(int a, int b){
+    int roota=ufind(a);
+    int rootb=ufind(b);
+    if(roota==rootb) return;
+    if(height[roota]>height[rootb]){
+        par[rootb]=roota;
+        size[roota]+=size[rootb];
+        height[roota]=max(height[roota], height[rootb]+1);
+    }
+    else{
+        par[roota]=rootb;
+        size[rootb]+=size[roota];
+        height[rootb]=max(height[rootb], height[roota]+1);
+    }
+}
+
+
+int main()
+{
+    ifstream cin("closing.in");
+    ofstream cout("closing.out");
+    cin>>n>>m;
+    for(int i=0;i<m;i++){
+        int t1, t2; cin>>t1>>t2;
+        adj[t1].push_back(t2);
+        adj[t2].push_back(t1);
+    }
+    for(int i=0;i<n;i++){
+        int t; cin>>t; v.push_back(t);
+    }
+    reverse(v.begin(),v.end());
+    uinit();
+    for(int i=0;i<n;i++){
+        int cur=v[i];
+        act[cur]=true;
+        for(int j=0;j<adj[cur].size();j++){
+            int nex=adj[cur][j];
+            if(act[nex]){
+                umerge(cur,nex);
+            }
+        }
+        if(size[ufind(cur)]==i+1){
+            ans.push_back("YES");
+        }
+        else ans.push_back("NO");
+    }
+    reverse(ans.begin(),ans.end());
+    for(int i=0;i<ans.size();i++){
+        cout<<ans[i]<<"\n";
+    }
+    return 0;
+}
