@@ -1,0 +1,76 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long
+
+ll n, m, k;
+vector<pair<ll,ll>>v;
+ll dp[5001];
+ll dp2[100001];
+map<ll,vector<ll>>rh;
+ll co[100000];
+const ll mod=1000000007;
+
+ll power(ll base, ll pwr) {
+    ll res = 1;
+    base = base % mod;
+    while (pwr > 0) {
+        if (pwr & 1) res = (res*base) % mod;
+        pwr = pwr >> 1;
+        base = (base*base)%mod;
+    }
+    return res;
+}
+
+
+int main()
+{
+    ifstream cin("poetry.in");
+    ofstream cout("poetry.out");
+    cin>>n>>m>>k;
+    for(ll i=0;i<n;i++){
+        ll t1, t2; cin>>t1>>t2;
+        v.push_back(make_pair(t1,t2));
+        rh[t2].push_back(t1);
+    }
+    dp[0]=0;
+    for(ll j=0;j<v.size();j++){
+        dp[v[j].first]++;
+    }
+    for(ll i=1;i<=k;i++){
+        for(ll j=0;j<v.size();j++){
+            if(i-v[j].first>=0){
+                dp[i]+=dp[i-v[j].first];
+                dp[i]%=mod;
+            }
+        }
+    }
+
+    for(ll i=0;i<=n;i++){
+        for(ll j=0;j<rh[i].size();j++){
+            dp2[i]+=(dp[k-rh[i][j]]);
+            dp2[i]%=mod;
+        }
+    }
+
+
+    for(ll i=0;i<m;i++){
+        char c; cin>>c;
+        co[c]++;
+    }
+
+    ll ans=1;
+    for(ll i='A';i<='Z';i++){
+        if(co[i]==0) continue;
+        ll temp=0;
+        for(ll j=0;j<=n;j++){
+                if(dp2[i]==0) continue;
+                temp+=power(dp2[j],co[i]);
+                temp%=mod;
+        }
+        if(temp!=0) ans= (ans*temp)%mod;
+    }
+    cout<<ans;
+    return 0;
+}
