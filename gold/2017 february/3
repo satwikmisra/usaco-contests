@@ -40,6 +40,8 @@ struct BIT{
     }
 };
 
+//above is the implementation of a binary indexed tree for range sum queries
+
 
 int main()
 {
@@ -48,11 +50,13 @@ int main()
     cin>>n;
     memset(st,-1,sizeof(st));
     memset(en,-1,sizeof(en));
+    //if there's a barn at the position, we set it equal to 1
     for(int i=1;i<=2*n;i++){
         int t; cin>>t; arr[i]=t;
         if(st[t]==-1) st[t]=i;
         else en[t]=i;
     }
+    //we use 2 pointed to traverse through the list and find the maximum range sum
     int ans=0;
     BIT bi=BIT(100001);
     for(int i=1;i<=2*n;i++){
@@ -64,6 +68,7 @@ int main()
             bi.update(st[arr[i]],-1);
         }
     }
+    //our answer is the sum of all of these intervals
     cout<<ans;
     return 0;
 }
