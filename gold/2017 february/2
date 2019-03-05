@@ -17,13 +17,17 @@ int main()
     for(int i=0;i<n;i++){
         int t; cin>>t; v2.push_back(t);
     }
+    //above is the input and formatting
+    
     int dp[n][n];
     memset(dp,0,sizeof(dp));
     dp[0][0]=(abs(v1[0]-v2[0])<=4);
+    //our initial base case for dp is if the first 2 barns can be connected
     for(int i=0;i<n;i++){
         dp[i][0]=(abs(v1[i]-v2[0])<=4);
         dp[0][i]=(abs(v1[0]-v2[i])<=4);
     }
+    //we can iterate through all the barns on one side and compare to the first one on the other side to set up the base case for dp
     for(int i=1;i<n;i++){
         for(int j=1;j<n;j++){
             dp[i][j]=max(dp[i-1][j],dp[i][j-1]);
@@ -32,6 +36,11 @@ int main()
             }
         }
     }
+    /*
+    the dp transitions are given by dp[i][j]=max(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]+1 if(diff<=4))
+    so basically we can solve for i,j by considering the problem without i, without j, and without either if the difference is valid
+    */
+    
     cout<<dp[n-1][n-1];
     return 0;
 }
