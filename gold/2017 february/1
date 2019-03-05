@@ -10,6 +10,14 @@ int dr[4]={1,0,-1,0};
 int dc[4]={0,1,0,-1};
 priority_queue<pair< pair<int,int>, pair<int,int> >>pq;
 
+/*
+All of the intermediary arrays and other data structures are declared above. The grid contains the value given from the input. 
+The dist array stores what we solve for and has the solution to the problem. The priority queue is used in the implmementation 
+of djikstra's algorithm. Dr and Dc contain the movements within the cells.
+*/
+
+
+
 bool inbounds(int nr, int nc){
     return (nr>=0 && nc>=0 && nr<n && nc<n);
 }
@@ -31,6 +39,10 @@ int main()
             int t; cin>>t; grid[i][j]=t;
         }
     }
+    //above was all of the input and formatting for the problem
+    
+    
+    //below is the implementation of djikstra's
     pq.push({{0,0},{0,0}});
     while(!pq.empty()){
         auto a=pq.top();
